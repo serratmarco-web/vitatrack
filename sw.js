@@ -1,5 +1,5 @@
 // VitaTrack Service Worker v1.0
-const CACHE_NAME = 'vitatrack-v2';
+const CACHE_NAME = 'vitatrack-v1';
 const ASSETS = [
   './',
   './index.html',
