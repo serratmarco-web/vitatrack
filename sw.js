@@ -1,5 +1,5 @@
 // VitaTrack Service Worker v1.0
-const CACHE_NAME = 'vitatrack-v1';
+const CACHE_NAME = 'vitatrack-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -33,6 +33,21 @@ self.addEventListener('fetch', event => {
 
   // For Google Fonts — network first, fallback to cache
   if (event.request.url.includes('fonts.googleapis.com') || event.request.url.includes('fonts.gstatic.com')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Network first para HTML, cache-first para resto
+  const isHTML = event.request.url.includes('index.html') || event.request.url.endsWith('/');
+  if (isHTML) {
     event.respondWith(
       fetch(event.request)
         .then(res => {
